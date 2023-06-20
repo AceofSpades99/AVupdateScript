@@ -1,12 +1,12 @@
 import os.path
-
-import dotenv
-from dotenv import load_dotenv
 import urllib3
-
-from downloader import download, feed
-from parser import url_parser, file_parser, dict_builder
+import dotenv
+from pathlib import Path
+from time import sleep
+from downloader import download
+from parser import url_parser, file_parser
 from update_checker import get_updates
+
 
 env_path = os.path.expanduser('~\\Documents\\auto_up.env')
 save_path = ''
@@ -27,7 +27,22 @@ else:
 	else:
 		dotenv.set_key(env_path, 'url', url)
 
-first = url_parser(url)
-second = file_parser(os.path.join(save_path, 'update.ver'))
-updates = get_updates(first, second)
-download(os.path.join(save_path, 'update.ver'), url + '/update.ver', updates)
+try:
+	first = url_parser(url)
+	if Path.is_file(Path(os.path.join(save_path, 'update.ver'))):
+		second = file_parser(os.path.join(save_path, 'update.ver'))
+		updates = get_updates(first, second)
+	else:
+		updates = get_updates(first)
+	download(os.path.join(save_path, 'update.ver'), url + '/update.ver', updates)
+except KeyboardInterrupt:
+	print('User interrupted the execution')
+except urllib3.exceptions.MaxRetryError:
+	print('Connection timed out, check your internet connection')
+except KeyError:
+	key = dotenv.get_key(env_path, 'url')
+	print(f'Could not reach: {key}\nMay be using a VPN')
+except Exception:
+	print('Unknown error')
+
+sleep(5)

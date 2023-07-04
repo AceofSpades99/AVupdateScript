@@ -20,7 +20,7 @@ else:
 		dotenv.set_key(env_path, 'save_path', save_path.replace('\\', '/'))
 	new_url = input(
 		'Cambiar la direccion de los archivos de actualizacion? (y/n) (por defecto: '
-		'https://antivirus.uclv.edu.cu/eset_upd/eset_nod32_antivirus_eav): ')
+		'https://antivirus.uclv.edu.cu/nod32/update_all): ')
 	if new_url.strip().lower() == 'y':
 		url = input('Entre la nueva direccion: ')
 		dotenv.set_key(env_path, 'url', url)
@@ -28,24 +28,28 @@ else:
 		dotenv.set_key(env_path, 'url', url)
 
 try:
+	print('Iniciando (este proceso puede demorar unos segundos)')
 	first = url_parser(url)
 	if Path.is_file(Path(os.path.join(save_path, 'update.ver'))):
 		second = file_parser(os.path.join(save_path, 'update.ver'))
 		updates = get_updates(first, second)
 	else:
 		updates = get_updates(first)
-	
-	asyncio.run(download(os.path.join(save_path, 'update.ver'), url + '/update.ver', updates))
+	if updates:
+		print('Descargando: ')
+		asyncio.run(download(os.path.join(save_path, 'update.ver'), url + '/update.ver', updates))
+	else:
+		print('No hay actualizaciones pendientes')
 except KeyboardInterrupt:
 	print('User interrupted the execution')
-# except RuntimeError:
-# 	print('User interrupted the execution')
+except RuntimeError:
+	print('User interrupted the execution')
 except urllib3.exceptions.MaxRetryError:
 	print('Connection timed out, check your internet connection')
 except KeyError:
 	key = dotenv.get_key(env_path, 'url')
 	print(f'Could not reach: {key}\nMay be using a VPN')
-# except:
-# 	print('Unknown error')
+except:
+	print('Unknown error')
 
 sleep(5)

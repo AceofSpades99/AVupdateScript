@@ -1,18 +1,21 @@
 def get_updates(online, local=None):
 	upd = {}
+	# if there are files already on the destination folder
 	if local is not None:
+		# for each element that exists on the online versions file
 		for item in online:
+			# if that element has a version and a file associated to it
 			if 'version' in online[item] and 'file' in online[item]:
-				if item in local:
-					if online[item]['version'] > local[item]['version']:
-						upd[item] = updater(upd, item, online)
-				else:
+				# if the element does not have a local version or has an outdated version, add it to the queue
+				if item not in local or online[item]['version'] > local[item]['version']:
 					upd[item] = updater(upd, item, online)
+	# if there are no files just add all
 	else:
 		for item in online:
 			if 'version' in online[item] and 'file' in online[item]:
 				upd[item] = updater(upd, item, online)
-	upd['[VER]'] = 'update.ver'
+	if upd:
+		upd['[VER]'] = 'update.ver'
 	return upd
 
 

@@ -16,12 +16,12 @@ def dict_builder(file_or_url_after_opened):
 	dict_new = {}
 	for i in file_or_url_after_opened:
 		if i.startswith('['):
-			name = i.replace('\n', '')
+			name = i.strip()
 			dict_new[f'{name}'] = {}
 		if i.__contains__('='):
 			(key, value) = i.split('=')
 		else:
 			key, value = '', ''
 		if key and value:
-			dict_new[name][key] = value.replace('\n', '')
+			dict_new[name][key] = value.strip()
 	return dict_new

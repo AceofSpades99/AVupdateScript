@@ -5,11 +5,11 @@ import dotenv
 from pathlib import Path
 from time import sleep
 
-from env_manager import initialize
-from downloader import download
-from garbage_collector import clean_unused
-from parser import url_parser, file_parser
-from update_checker import get_updates
+from app.management.env_manager import initialize
+from app.update_downloader.downloader import download
+from app.management.garbage_collector import clean_unused
+from app.update_downloader.parser import url_parser, file_parser
+from app.update_downloader.update_checker import get_updates
 
 
 def __version__():
@@ -33,16 +33,16 @@ if __name__ == '__main__':
 		else:
 			print('No hay actualizaciones pendientes')
 	except KeyboardInterrupt:
-		print('User interrupted the execution')
+		print('El usuario ha interrumpido la ejecución')
 	except RuntimeError:
-		print('User interrupted the execution')
+		print('El usuario ha interrumpido la ejecución')
 	except urllib3.exceptions.MaxRetryError:
-		print('Connection timed out, check your internet connection')
+		print('Tiempo de espera agotado, revise su conexión a internet')
 	except KeyError:
 		key = dotenv.get_key(env['env_path'], 'url')
-		print(f'Could not reach: {key}\nMay be using a VPN')
+		print(f'No se pudo conectar a: {key}')
 	except:
-		print('Unknown error')
+		print('Error desconocido')
 	
 	print('Ejecución finalizada')
 	sleep(5)

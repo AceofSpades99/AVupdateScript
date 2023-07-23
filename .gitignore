@@ -1,5 +1,4 @@
 /.idea/vcs.xml
 .gitignore
 /.idea
-/output/
-/icon/
+/resources/

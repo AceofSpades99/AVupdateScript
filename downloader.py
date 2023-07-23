@@ -27,7 +27,7 @@ async def download(file_path, in_url, updates):
 			if responses[0] is not None:
 				print(responses)
 	else:
-		print(f"ERROR, status code: {status}")
+		print(f'ERROR, status code: {status}')
 
 
 async def get_async(url, path, sem, retry=0, has_retried=False):
@@ -45,13 +45,13 @@ async def get_async(url, path, sem, retry=0, has_retried=False):
 							file.write(data)
 					# mark the file as incomplete and retry 5 times
 					except ClientPayloadError:
-						print(f' File download incomplete for file: {url}, retrying')
+						print(f' Descarga incompleta del archivo: {url}, reintentando')
 						if retry == 0 and not has_retried:
 							await get_async(url, path, sem, 5, True)
 						elif retry == 0 and has_retried:
 							# if retrying fails ask the user if he wants to continue, otherwise close the app
-							print(f'Retried 5 times and failed to retrieve {url}')
-							if input('Do you want to cancel the process? (y/n): ').strip().lower() == 'y':
+							print(f'Se ha intentado descargar 5 veces el archivo: {url}')
+							if input('Quiere cancelar el proceso? (y/n): ').strip().lower() == 'y':
 								exit()
 							else:
 								await get_async(url, path, sem, 5, True)

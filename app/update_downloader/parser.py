@@ -1,9 +1,8 @@
 import urllib3
-from Tools.scripts.ndiff import fopen
 
 
 def file_parser(file):
-	return dict_builder(fopen(file))
+	return dict_builder(open(file))
 
 
 def url_parser(url):

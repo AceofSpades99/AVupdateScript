@@ -9,10 +9,9 @@ def initialize(current_version):
 	if os.path.exists(env_path):
 		save_path = dotenv.get_key(env_path, 'save_path')
 		url = dotenv.get_key(env_path, 'url')
-		version = dotenv.get_key(env_path, 'version')
-		if not version:
+		if not dotenv.get_key(env_path, 'version') or dotenv.get_key(env_path, 'version') < current_version:
 			dotenv.set_key(env_path, 'version', current_version)
-			version = current_version
+		version = dotenv.get_key(env_path, 'version')
 		return {'save_path': save_path, 'url': url, 'env_path': env_path, 'version': version}
 	else:
 		save_path = input('Ubicacion hacia donde descargar las actualizaciones: ')

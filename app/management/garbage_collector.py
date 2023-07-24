@@ -11,6 +11,7 @@ def clean_unused(update_ver, env):
 	for modules in update_ver:
 		if 'file' in update_ver[modules].keys():
 			files.append(update_ver[modules]['file'])
+	files.append('update.ver')
 	scandir(files, env)
 
 

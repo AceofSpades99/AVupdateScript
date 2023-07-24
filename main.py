@@ -47,6 +47,5 @@ if __name__ == '__main__':
 		print(e)
 	except:
 		print('Error desconocido')
-	
 	print('Ejecución finalizada')
 	sleep(5)

@@ -1,10 +1,10 @@
-import os.path
-import requests
 import asyncio
-import aiohttp
-import tqdm.asyncio
+import os.path
 from pathlib import Path
 
+import aiohttp
+import requests
+import tqdm.asyncio
 from aiohttp import ClientPayloadError
 
 

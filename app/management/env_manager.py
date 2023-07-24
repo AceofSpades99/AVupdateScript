@@ -3,6 +3,8 @@ import platform
 
 import dotenv
 
+from app.exceptions import NotSupportedError
+
 
 def initialize(current_version):
 	env_path = platform_verify_support()
@@ -38,5 +40,5 @@ def platform_verify_support():
 		else:
 			env_path = os.path.expanduser(os.getcwd() + '/auto_up.env')
 	else:
-		raise OSError
+		raise NotSupportedError
 	return env_path

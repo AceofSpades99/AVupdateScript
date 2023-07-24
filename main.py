@@ -1,13 +1,15 @@
 import asyncio
 import os.path
-import urllib3
-import dotenv
 from pathlib import Path
 from time import sleep
 
+import dotenv
+from urllib3.exceptions import MaxRetryError
+
+from app.exceptions import NotSupportedError
 from app.management.env_manager import initialize
-from app.update_downloader.downloader import download
 from app.management.garbage_collector import clean_unused
+from app.update_downloader.downloader import download
 from app.update_downloader.parser import url_parser, file_parser
 from app.update_downloader.update_checker import get_updates
 
@@ -36,11 +38,13 @@ if __name__ == '__main__':
 		print('El usuario ha interrumpido la ejecución')
 	except RuntimeError:
 		print('El usuario ha interrumpido la ejecución')
-	except urllib3.exceptions.MaxRetryError:
+	except MaxRetryError:
 		print('Tiempo de espera agotado, revise su conexión a internet')
 	except KeyError:
 		key = dotenv.get_key(env['env_path'], 'url')
 		print(f'No se pudo conectar a: {key}')
+	except NotSupportedError as e:
+		print(e)
 	except:
 		print('Error desconocido')
 	

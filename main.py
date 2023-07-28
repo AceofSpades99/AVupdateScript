@@ -6,9 +6,7 @@ from time import sleep
 import dotenv
 from urllib3.exceptions import MaxRetryError
 
-from app.exceptions import NotSupportedError
 from app.management.env_manager import initialize
-from app.management.garbage_collector import clean_unused
 from app.update_downloader.downloader import download
 from app.update_downloader.parser import url_parser, file_parser
 from app.update_downloader.update_checker import get_updates
@@ -25,13 +23,13 @@ if __name__ == '__main__':
 		online = url_parser(env['url'])  # parse the default_url's update.ver file
 		if Path.is_file(Path(os.path.join(env['save_path'], 'update.ver'))):  # if the download path has an update file:
 			local = file_parser(os.path.join(env['save_path'], 'update.ver'))
-			updates = get_updates(online, local)
+			updates = get_updates(online, env, local)
 		else:
-			updates = get_updates(online)
+			updates = get_updates(online, env)
 		if updates:  # if there are updates
 			print('Descargando: ')
 			asyncio.run(download(os.path.join(env['save_path'], 'update.ver'), env['url'] + '/update.ver', updates))
-			clean_unused(online, env)
+		# clean_unused(online, env)
 		else:
 			print('No hay actualizaciones pendientes')
 	except KeyboardInterrupt:
@@ -43,9 +41,10 @@ if __name__ == '__main__':
 	except KeyError:
 		key = dotenv.get_key(env['env_path'], 'url')
 		print(f'No se pudo conectar a: {key}')
-	except NotSupportedError as e:
-		print(e)
-	except:
-		print('Error desconocido')
+	except Exception as e:
+		if e is not None:
+			print(e)
+		else:
+			print('Error desconocido')
 	print('Ejecución finalizada')
 	sleep(5)

@@ -13,7 +13,7 @@ from app.update_downloader.update_checker import get_updates
 
 
 def __version__():
-	return '1.6.6'
+	return '1.6.7'
 
 
 if __name__ == '__main__':

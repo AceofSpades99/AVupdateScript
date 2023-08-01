@@ -7,14 +7,14 @@ import dotenv
 from urllib3.exceptions import MaxRetryError
 
 from app.management.env_manager import initialize
-from app.management.garbage_collector import clean_unused
+from app.management.garbage_collector import start_cleaning_process
 from app.update_downloader.downloader import download
 from app.update_downloader.parser import url_parser, file_parser
 from app.update_downloader.update_checker import get_updates
 
 
 def __version__():
-	return '1.7'
+	return '1.7.1'
 
 
 if __name__ == '__main__':
@@ -22,6 +22,7 @@ if __name__ == '__main__':
 	try:
 		print('Iniciando (este proceso puede demorar unos segundos)')
 		online = url_parser(env['url'])  # parse the default_url's update.ver file
+		local = None
 		if Path.is_file(Path(os.path.join(env['save_path'], 'update.ver'))):  # if the download path has an update file:
 			local = file_parser(os.path.join(env['save_path'], 'update.ver'))
 			updates = get_updates(online, env, local)
@@ -30,7 +31,7 @@ if __name__ == '__main__':
 		if updates:  # if there are updates
 			print('Descargando: ')
 			asyncio.run(download(os.path.join(env['save_path'], 'update.ver'), env['url'] + '/update.ver', updates))
-			clean_unused(online, env)
+			start_cleaning_process(online, local, env)
 		else:
 			print('No hay actualizaciones pendientes')
 	except KeyboardInterrupt:

@@ -38,7 +38,7 @@ async def get_async(url, path, sem, retry=0, has_retried=False):
 			# with the url and without timeout
 			async with session.get(url, timeout=None) as response:
 				# open a new file to write in binary
-				with open(path, 'wb') as file:
+				with open(path, 'wb+') as file:
 					# try to iterate through the file if there's an error while receiving the data:
 					try:
 						async for data in response.content.iter_chunked(1024):

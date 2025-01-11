@@ -1,0 +1,63 @@
+/* Globals */
+Screen {
+    align: center middle;
+}
+Button {
+    width: 100%;
+}
+
+
+/* Main UI */
+TUI #dialog {
+    width: 70;
+    height: 10;
+    align: center middle;
+}
+
+
+/* Settings UI */
+SettingsScreen #container {
+    grid-size: 1;
+    grid-rows: 3 1 3;
+    width: 100;
+    height: 11;
+}
+SettingsScreen #buttons {
+    align: center middle;
+    grid-size: 2;
+    grid-gutter: 2;
+}
+SettingsScreen Button {
+    width: 40%;
+}
+SettingsScreen #grid_accept {
+    align: right middle;
+}
+SettingsScreen #grid_cancel {
+    align: left middle;
+}
+SettingsScreen #error_label {
+    color: red;
+}
+SettingsScreen #folder_label {
+    margin-bottom: 1;
+}
+
+
+/* Exit Dialog */
+QuitScreen #dialog {
+    grid-size: 2;
+    grid-gutter: 2;
+    grid-rows: 1fr 3;
+    padding: 0 1;
+    width: 60;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
+}
+QuitScreen #question {
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+}

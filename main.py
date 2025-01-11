@@ -1,52 +1,15 @@
-import asyncio
 import os.path
-from pathlib import Path
-from time import sleep
 
-import dotenv
-from urllib3.exceptions import MaxRetryError
-
-from app.management.env_manager import initialize
-from app.management.garbage_collector import start_cleaning_process
-from app.update_downloader.downloader import download
-from app.update_downloader.parser import url_parser, file_parser
-from app.update_downloader.update_checker import get_updates
+from app.gui.tui import TUI
 
 
 def __version__():
-	return '1.7.1'
-
+    return '1.7.1'
 
 if __name__ == '__main__':
-	env = initialize(__version__())  # check env to know if the app has been used before
-	try:
-		print('Iniciando (este proceso puede demorar unos segundos)')
-		online = url_parser(env['url'])  # parse the default_url's update.ver file
-		local = None
-		if Path.is_file(Path(os.path.join(env['save_path'], 'update.ver'))):  # if the download path has an update file:
-			local = file_parser(os.path.join(env['save_path'], 'update.ver'))
-			updates = get_updates(online, env, local)
-		else:
-			updates = get_updates(online, env)
-		if updates:  # if there are updates
-			print('Descargando: ')
-			asyncio.run(download(os.path.join(env['save_path'], 'update.ver'), env['url'] + '/update.ver', updates))
-			start_cleaning_process(online, local, env)
-		else:
-			print('No hay actualizaciones pendientes')
-	except KeyboardInterrupt:
-		print('El usuario ha interrumpido la ejecución')
-	except RuntimeError:
-		print('El usuario ha interrumpido la ejecución')
-	except MaxRetryError:
-		print('Tiempo de espera agotado, revise su conexión a internet')
-	except KeyError:
-		key = dotenv.get_key(env['env_path'], 'url')
-		print(f'No se pudo conectar a: {key}')
-	except Exception as e:
-		if e is not None:
-			print(e)
-		else:
-			print('Error desconocido')
-	print('Ejecución finalizada')
-	sleep(5)
+    app = TUI(
+        url='https://antivirus.uclv.edu.cu/nod32/update_all',
+        version=__version__(),
+        css_path=os.path.abspath('resources/css/style.tcss')
+    )
+    app.run()

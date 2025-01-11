@@ -5,8 +5,8 @@ from urllib.request import urlopen
 import tqdm
 from bs4 import BeautifulSoup
 
-from app.management.env_manager import initialize
-from app.update_downloader.downloader import get_async
+from old.app.management.env_manager import initialize
+from old.update_downloader.downloader import get_async
 
 file_extensions = (
 	'.nup',

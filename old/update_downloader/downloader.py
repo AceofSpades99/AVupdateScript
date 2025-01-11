@@ -31,7 +31,7 @@ async def download(file_path, in_url, updates):
 
 
 async def get_async(url, path, sem, retry=0, has_retried=False):
-	# asycn using the semaphore declared earlier
+	# async using the semaphore declared earlier
 	async with sem:
 		# with a new http session
 		async with aiohttp.ClientSession() as session:

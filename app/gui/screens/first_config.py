@@ -1,50 +1,51 @@
 import dotenv
+from rich.style import Style
 from rich.text import Text
 from textual import on
 from textual.app import ComposeResult
 from textual.containers import Grid
-from textual.screen import Screen
-from textual.widgets import Input, Button, Label, Header, Footer
+from textual.screen import ModalScreen
+from textual.widgets import Input, Button, Label
 
 from app.management.platform_support import platform_verify_support
 from app.validation.path_validator import PathValidator
 
 
-class SettingsScreen(Screen):
-    def __init__(self, *args, **kwargs) -> None:
+class FirstConfig(ModalScreen[bool]):
+    def __init__(self, remember: bool = True, *args, **kwargs) -> None:
+        self.remember = remember
         self.env_path = platform_verify_support()
-        self.folder = dotenv.get_key(self.env_path, 'save_path')
         super().__init__(*args, **kwargs)
-        self.parent_bindings = self.app.active_bindings
 
     def compose(self) -> ComposeResult:
-        yield Header()
-        if self.folder:
-            yield Label(Text.assemble(('Carpeta de guardado actual: ', 'bold cyan'), self.folder), id='folder_label')
         yield Grid(
+            Grid(
+                Label(
+                    Text(
+                        'Provea la direccion de la carpeta donde se deben guardar los archivos',
+                        Style(
+                            color='cyan',
+                        ),
+                    ),
+                    id='folder_label'
+                ),
+                classes='center'
+            ),
             Input(
                 placeholder='Carpeta hacia donde descargar',
                 validators=[
-                    PathValidator(),
+                    PathValidator()
                 ],
                 valid_empty=False,
-                id='input'
+                id='input',
             ),
             Label('', id='error_label'),
             Grid(
-                Grid(
-                    Button('Aceptar', variant='success', id='accept'),
-                    id='grid_accept'
-                ),
-                Grid(
-                    Button('Cancelar', variant='error', id='cancel'),
-                    id='grid_cancel'
-                ),
-                id='buttons'
+                Button('Aceptar', variant='success', id='accept'),
+                classes='center',
             ),
             id='container',
         )
-        yield Footer()
 
     @on(Input.Changed, '#input')
     def show_invalid_reasons(self, event: Input.Changed) -> None:
@@ -58,10 +59,9 @@ class SettingsScreen(Screen):
     @on(Button.Pressed, '#accept')
     def save_changes(self):
         value = self.query_one(Input).value
-        if Input.is_valid and value:
-            dotenv.set_key(self.env_path, 'save_path', value)
-        self.app.switch_mode('dashboard')
-
-    @on(Button.Pressed, '#cancel')
-    def ignore_changes(self):
-        self.app.switch_mode('dashboard')
+        if Input.is_valid:
+            if value:
+                dotenv.set_key(self.env_path, 'save_path', value)
+                self.dismiss()
+            else:
+                self.query_one('#error_label').update('La ruta no puede estar en blanco')

@@ -15,6 +15,21 @@ TUI #dialog {
 }
 
 
+/* First Config Screen */
+FirstConfig #container {
+    grid-size: 1;
+    grid-rows: 3 3 1;
+    width: 100;
+    height: 11;
+}
+FirstConfig Button {
+    width: 20%;
+}
+.center {
+    align: center middle;
+}
+
+
 /* Settings UI */
 SettingsScreen #container {
     grid-size: 1;
@@ -50,8 +65,8 @@ QuitScreen #dialog {
     grid-gutter: 2;
     grid-rows: 1fr 3;
     padding: 0 1;
-    width: 60;
-    height: 11;
+    width: 40;
+    height: 8;
     border: thick $background 80%;
     background: $surface;
 }
